@@ -7,13 +7,27 @@ public class MemoryArena {
     }
 
     public int alloc(int size) {
-        if (size + offset > memory.length) {
+        if (offset + size > memory.length) {
             throw new RuntimeException("Out of memory!");
         }
-
         int start = offset;
         offset += size;
         return start;
     }
 
+    public void reset() {
+        offset = 0;
+    }
+
+    public int capacity() {
+        return memory.length;
+    }
+
+    public int used() {
+        return offset;
+    }
+
+    public int remaining() {
+        return memory.length - offset;
+    }
 }
