@@ -2,6 +2,10 @@ public class MemoryArena {
     public final byte[] memory;
     private int offset = 0;
 
+    private int NODE_SIZE = 8;
+    private int VALUE_OFFSET = 0;
+    private int NEXT_OFFSET = 4;
+
     public MemoryArena(int size) {
         memory = new byte[size];
     }
@@ -51,5 +55,26 @@ public class MemoryArena {
     public int getInt(int addr) {
         int reconstruct = (memory[addr] & 0xFF) << 24 | (memory[addr + 1] & 0xFF) << 16 | (memory[addr + 2] & 0xFF) << 8 | (memory[addr + 3] & 0xFF);
         return reconstruct;
+    }
+
+    //node creation & manip
+    public int createNode(int val) {
+        int nodeAddr = alloc(8);
+        putInt(nodeAddr + VALUE_OFFSET, val);
+        putInt(nodeAddr + NEXT_OFFSET, -1);
+
+        return nodeAddr;
+    }
+
+    public int getValue(int nodeAddr) {
+        return getInt(nodeAddr + VALUE_OFFSET);
+    }
+
+    public void setNext(int nodeAddr, int nextAddr) {
+        putInt(nodeAddr + NEXT_OFFSET, nextAddr);
+    }
+
+    public int getNext(int nodeAddr) {
+        return getInt(nodeAddr + NEXT_OFFSET);
     }
 }

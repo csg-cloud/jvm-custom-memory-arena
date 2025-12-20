@@ -36,7 +36,19 @@ public class Main {
         System.out.println(Integer.toHexString(arena.memory[3]));
 
         // big endian byte read
-        System.out.print(Integer.toHexString(arena.getInt(0)));
+        System.out.println(Integer.toHexString(arena.getInt(0)));
+        //node tests
+        arena.reset();
+        System.out.println();
+        int node1 = arena.createNode(10);
+        int node2 = arena.createNode(20);
+
+        System.out.println(node1);
+        System.out.println(node2);
+
+        arena.setNext(node1, node2);
+
+        System.out.println(arena.getNext(node1));
 
     }
 }
