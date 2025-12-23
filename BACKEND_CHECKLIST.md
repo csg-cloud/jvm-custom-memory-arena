@@ -63,11 +63,11 @@
 - [x] Handle reallocation
 
 ### 3.3 Implement String Storage
-- [ ] Define string layout: [length][char data]
-- [ ] Implement createString(String s)
-- [ ] Implement getString(int addr)
-- [ ] Implement getStringLength()
-- [ ] Handle UTF-16 encoding
+- [x] Define string layout: [length][char data]
+- [x] Implement createString(String s)
+- [x] Implement getString(int addr)
+- [x] Implement getStringLength()
+- [x] Handle UTF-16 encoding
 
 ### 3.4 Implement Hash Table (Advanced)
 - [ ] Define hash table layout

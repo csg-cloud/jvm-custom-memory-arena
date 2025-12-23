@@ -12,6 +12,7 @@ public class Main {
         testBooleanSupport();
         testArrayStore();
         testVectorStore();
+        testStringStore();
     }
 
     static void testBasicAllocation() {
@@ -395,6 +396,64 @@ public class Main {
         System.out.println("  Growth factor: 1.5x");
         System.out.println("  Old data is copied to new location");
         System.out.println("  Old space remains allocated (bump allocator limitation)");
+        System.out.println();
+    }
+
+    static void testStringStore() {
+        System.out.println("Test 12: String Storage (UTF-16)");
+        MemoryArena arena = new MemoryArena(512);
+        StringStore stringStore = new StringStore(arena);
+        
+        System.out.println("Creating strings:");
+        String test1 = "Hello";
+        int str1Addr = stringStore.createString(test1);
+        System.out.println("  Created: \"" + test1 + "\" at address " + str1Addr);
+        System.out.println("  Length: " + stringStore.getStringLength(str1Addr));
+        
+        String test2 = "World!";
+        int str2Addr = stringStore.createString(test2);
+        System.out.println("  Created: \"" + test2 + "\" at address " + str2Addr);
+        System.out.println("  Length: " + stringStore.getStringLength(str2Addr));
+        
+        String test3 = "你好";
+        int str3Addr = stringStore.createString(test3);
+        System.out.println("  Created: \"" + test3 + "\" at address " + str3Addr);
+        System.out.println("  Length: " + stringStore.getStringLength(str3Addr));
+        
+        String test4 = "";
+        int str4Addr = stringStore.createString(test4);
+        System.out.println("  Created: \"" + test4 + "\" (empty) at address " + str4Addr);
+        System.out.println("  Length: " + stringStore.getStringLength(str4Addr));
+        
+        System.out.println("\nRetrieving strings:");
+        String retrieved1 = stringStore.getString(str1Addr);
+        System.out.println("  Retrieved: \"" + retrieved1 + "\"");
+        System.out.println("  Match: " + test1.equals(retrieved1));
+        
+        String retrieved2 = stringStore.getString(str2Addr);
+        System.out.println("  Retrieved: \"" + retrieved2 + "\"");
+        System.out.println("  Match: " + test2.equals(retrieved2));
+        
+        String retrieved3 = stringStore.getString(str3Addr);
+        System.out.println("  Retrieved: \"" + retrieved3 + "\"");
+        System.out.println("  Match: " + test3.equals(retrieved3));
+        
+        System.out.println("\nAccessing individual characters:");
+        System.out.println("  str1[0] = '" + stringStore.getCharAt(str1Addr, 0) + "'");
+        System.out.println("  str1[4] = '" + stringStore.getCharAt(str1Addr, 4) + "'");
+        System.out.println("  str3[0] = '" + stringStore.getCharAt(str3Addr, 0) + "'");
+        System.out.println("  str3[1] = '" + stringStore.getCharAt(str3Addr, 1) + "'");
+        
+        System.out.println("\nModifying character:");
+        stringStore.setCharAt(str1Addr, 0, 'h');
+        System.out.println("  Modified str1[0] to 'h'");
+        System.out.println("  New string: \"" + stringStore.getString(str1Addr) + "\"");
+        
+        System.out.println("\nMemory layout for \"Hello\":");
+        System.out.println("  Header (length): address " + str1Addr + " (4 bytes)");
+        System.out.println("  Char data start: address " + (str1Addr + 4) + " (10 bytes for 5 chars)");
+        System.out.println("  Total size: " + (4 + 5 * 2) + " bytes");
+        System.out.println("  UTF-16 encoding: 2 bytes per character");
         System.out.println();
     }
 }
