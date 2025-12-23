@@ -151,8 +151,9 @@ Pointer States:
 
 ### 6. Data Structures Built from Raw Memory
 
-Linked list using raw memory addresses:
+Multiple data structures implemented using raw memory:
 
+**Linked List:**
 ```
 Linked List: [10] → [20] → [30] → null
 
@@ -171,6 +172,44 @@ Memory Layout:
 │ 0x00│ 0x00│ 0x00│ 0x1E│ 0xFF│ 0xFF│ 0xFF│ 0xFF│  Node 3 (addr=16)
 │ value=30  │ next=-1 (null)                    │
 └───────────────────────────────────────────────┘
+```
+
+**Fixed Array (ArrayStore):**
+```
+Layout: [length:4B][data:length×elementSize]
+┌──────┬────────────────────────────┐
+│ len  │ element0 │ element1 │ ...  │
+└──────┴────────────────────────────┘
+```
+
+**Dynamic Array/Vector (VectorStore):**
+```
+Layout: [length:4B][capacity:4B][data pointer:4B]
+┌──────┬──────────┬──────────┐
+│ len  │ capacity │ dataPtr  │ → [data array]
+└──────┴──────────┴──────────┘
+Growth: 1.5x factor, copies data on reallocation
+```
+
+**String (StringStore):**
+```
+Layout: [length:4B][char data:length×2B]
+┌──────┬────────────────────────────┐
+│ len  │ char0 │ char1 │ char2 │... │
+└──────┴────────────────────────────┘
+Encoding: UTF-16 (2 bytes per character)
+```
+
+**Hash Table (HashTableStore):**
+```
+Layout: [bucketCount:4B][bucket array:count×4B]
+┌──────────┬──────┬──────┬──────┐
+│ buckets  │ ptr0 │ ptr1 │ ...  │
+└──────────┴──┬───┴──┬───┴──────┘
+              │      │
+              ↓      ↓
+         [key:val] [key:val] → [key:val]
+Collision resolution: Chaining (linked lists)
 ```
 
  
@@ -255,9 +294,11 @@ The implementation prioritizes clarity, correctness, and explicit control over p
 │ • char (2B, UTF-16) • boolean (1B)                      │
 ├─────────────────────────────────────────────────────────┤
 │ Data Structures                                         │
-│ • NodeStore: separated node logic                       │
-│ • Node layout: [value:4B][next:4B]                      │
-│ • Linked list with pointer validation                   │
+│ • NodeStore: Linked lists [value:4B][next:4B]           │
+│ • ArrayStore: Fixed arrays [length][data]               │
+│ • VectorStore: Dynamic arrays with 1.5x growth         │
+│ • StringStore: UTF-16 strings [length][chars]           │
+│ • HashTableStore: Hash tables with chaining             │
 ├─────────────────────────────────────────────────────────┤
 │ Error Handling                                          │
 │ • Custom exceptions with diagnostic context             │
@@ -268,12 +309,6 @@ The implementation prioritizes clarity, correctness, and explicit control over p
  
 
 ## Planned Next Steps
-
-### Phase 3: Structured Data Types
-- Fixed-size arrays (`ArrayStore`)
-- Dynamic arrays/vectors with growth
-- String storage with UTF-16 encoding
-- Hash table implementation (advanced)
 
 ### Phase 4: Advanced Memory Management
 - Memory regions/segments
